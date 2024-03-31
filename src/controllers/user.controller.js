@@ -8,11 +8,11 @@ import fs from "fs";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     // find user
-    const user = User.findById(userId);
-
+    const user = await User.findById(userId);
+    console.log(user);
     // generate token
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     // save refreshToken in db
     user.refreshToken = refreshToken;
@@ -104,6 +104,8 @@ const registerUser = AsyncHandler(async (req, res) => {
 const loginUser = AsyncHandler(async (req, res) => {
   // get user details from front-end
   const { email, username, password } = req.body;
+  console.log("email", email);
+  console.log("username", username);
 
   // username or email
   if (!email && !username) {
