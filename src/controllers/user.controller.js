@@ -11,7 +11,6 @@ const generateAccessAndRefreshToken = async (userId) => {
   try {
     // find user
     const user = await User.findById(userId);
-    console.log(user);
     // generate token
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
@@ -29,7 +28,6 @@ const generateAccessAndRefreshToken = async (userId) => {
 const registerUser = AsyncHandler(async (req, res) => {
   // get user details from front-end
   const { fullName, email, username, password } = req.body;
-  console.log(email);
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
 
@@ -106,8 +104,6 @@ const registerUser = AsyncHandler(async (req, res) => {
 const loginUser = AsyncHandler(async (req, res) => {
   // get user details from front-end
   const { email, username, password } = req.body;
-  console.log("email", email);
-  console.log("username", username);
 
   // username or email
   if (!email && !username) {
@@ -165,8 +161,8 @@ const logoutUser = AsyncHandler(async (req, res) => {
   const user = await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: "",
+      $unset: {
+        refreshToken: 1, // remove the field from DB
       },
     },
     { new: true }
@@ -407,8 +403,6 @@ const getUserChannelProfile = AsyncHandler(async (req, res) => {
   if (!channel?.length) {
     throw new ApiError(404, "channel not found");
   }
-
-  console.log("channel", channel);
 
   return res
     .status(200)
