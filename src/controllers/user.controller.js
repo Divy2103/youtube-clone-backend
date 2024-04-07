@@ -200,9 +200,7 @@ const refreshAccessToken = AsyncHandler(async (req, res) => {
       process.env.REFRESH_TOKEN_SECRET
     );
 
-    const user = await User.findById(decodedToken?._id).select(
-      "-password"
-    );
+    const user = await User.findById(decodedToken?._id).select("-password");
     if (!user) {
       throw new ApiError(404, "Invalid refresh token");
     }
@@ -282,7 +280,7 @@ const updateAccountDetails = AsyncHandler(async (req, res) => {
 });
 
 const updateUserAvatar = AsyncHandler(async (req, res) => {
-  const avatarLocalPath = req.file?.avatar[0]?.path;
+  const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is missing");
@@ -311,7 +309,7 @@ const updateUserAvatar = AsyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = AsyncHandler(async (req, res) => {
-  const coverImageLocalPath = req.file?.coverImage[0]?.path;
+  const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {
     throw new ApiError(400, "coverImage file is missing");
