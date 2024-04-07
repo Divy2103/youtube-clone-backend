@@ -1,4 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
+import { extractPublicId } from "cloudinary-build-url";
 import fs from "fs";
 
 cloudinary.config({
@@ -15,7 +16,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
     });
-    
+
     // remove the locally saved temperary file as the upload on operation got successfull
     fs.unlinkSync(localFilePath);
 
@@ -27,4 +28,17 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-export { uploadOnCloudinary };
+const deleteFromCloudinary = async (imageUrl) => {
+  try {
+    if (!imageUrl) return "where is imageUrl"; // if no file, return
+
+    const publicId = extractPublicId(imageUrl);
+    // delete the file from cloudinary
+    const response = await cloudinary.uploader.destroy(publicId);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+export { uploadOnCloudinary, deleteFromCloudinary };
